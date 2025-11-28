@@ -43,6 +43,13 @@ db.serialize(() => {
     details TEXT
   )`);
 
+  // Insert default user
+  db.run("INSERT OR IGNORE INTO users (name, email, password) VALUES (?, ?, ?)", [
+    "Admin",
+    "admin@example.com",
+    "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi" // password: password
+  ]);
+
   // Insert default data
   const templates = [
     { title: "Elegant Wedding", description: "Royal indoor wedding theme with flower arches.", price: 25000, image: "/images/wedding1.jpg", details: "Includes floral archways, red carpet, golden chairs, lighting setup, and mandap." },
