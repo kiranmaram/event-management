@@ -47,7 +47,7 @@ db.serialize(() => {
   db.run("INSERT OR IGNORE INTO users (name, email, password) VALUES (?, ?, ?)", [
     "Admin",
     "admin@example.com",
-    "$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi" // password: password
+    "password" // plain text for testing
   ]);
 
   // Insert default data
@@ -229,19 +229,13 @@ app.post("/login", async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    try {
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        return res.status(401).json({ message: "Incorrect password" });
-      }
-
-      const token = jwt.sign({ id: user.id, name: user.name }, "secret_key", { expiresIn: "2h" });
-
-      res.json({ message: "Login successful", token, user: { id: user.id, name: user.name } });
-    } catch (err) {
-      console.error("Login Error:", err);
-      res.status(500).json({ message: "Server error" });
+    if (password !== user.password) {
+      return res.status(401).json({ message: "Incorrect password" });
     }
+
+    const token = jwt.sign({ id: user.id, name: user.name }, "secret_key", { expiresIn: "2h" });
+
+    res.json({ message: "Login successful", token, user: { id: user.id, name: user.name } });
   });
 });
 
