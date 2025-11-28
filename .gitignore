@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+.env
+build/
+dist/
+*.db
+event_management.db
